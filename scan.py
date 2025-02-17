@@ -73,8 +73,6 @@ try:
         # Capture frame-by-frame
         frame = picam2.capture_array()
         
-        frame = Image.fromarray(frame, mode="RGB")
-
         # Run YOLO11 inference on the frame
         results = model.predict(source=frame, show=True, stream=True, verbose=False)
 
