@@ -3,6 +3,7 @@ import cv2
 from ultralytics import YOLO
 from picamera2 import Picamera2
 import time
+import speak
 
 # Setup
 SERVO_PIN = 18
@@ -81,6 +82,7 @@ try:
                     pred_idx = r.boxes.cls[i].item()
                     confidence = r.boxes.conf[i].item()
                     print(f"{i} => Class: {model.names.get(pred_idx)}, Confidence: {confidence:.2f}")
+                    speak.fire_safety_advice(model.names.get(pred_idx))
 
             # Visualize the results on the frame
             annotated_frame = r.plot()

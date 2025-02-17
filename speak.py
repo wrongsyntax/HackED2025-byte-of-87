@@ -24,10 +24,10 @@ def fire_safety_advice(fire_type):
     - "oil" -> Warns against using water, suggests using a fire blanket.
     """
     advice = {
-        "electrical": "Warning! Do not put water on an electrical fire. Use a Class C fire extinguisher.",
-        "solid": "This is a solid fire. Use water to extinguish it.",
-        "chemical": "Caution! This is a chemical fire. Use a fire extinguisher labeled Class B or Class D.",
-        "oil": "Danger! Do not use water on an oil fire. Cover it with a fire blanket or use a Class K extinguisher."
+        "electrical": "Electrical fire detected. Do not put water on an electrical fire. Use a Class C fire extinguisher.",
+        "solid": "Solid fire detected. Use water to extinguish it.",
+        "chemical": "Chemical fire detected. Use a fire extinguisher labeled Class B or Class D.",
+        "oil": "Oil fire detected Do not use water on an oil fire. Cover it with a fire blanket or use a Class K extinguisher."
     }
     
     message = advice.get(fire_type.lower(), "Unknown fire type detected. Follow safety protocols.")
