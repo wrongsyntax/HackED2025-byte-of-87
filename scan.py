@@ -4,6 +4,7 @@ from ultralytics import YOLO
 from picamera2 import Picamera2
 import time
 import speak
+from PIL import Image
 
 # Setup
 SERVO_PIN = 18
@@ -71,6 +72,8 @@ try:
         
         # Capture frame-by-frame
         frame = picam2.capture_array()
+        
+        frame = Image.fromarray(frame, mode="RGB")
 
         # Run YOLO11 inference on the frame
         results = model.predict(source=frame, show=True, stream=True, verbose=False)
@@ -82,7 +85,7 @@ try:
                     pred_idx = r.boxes.cls[i].item()
                     confidence = r.boxes.conf[i].item()
                     print(f"{i} => Class: {model.names.get(pred_idx)}, Confidence: {confidence:.2f}")
-                    speak.fire_safety_advice(model.names.get(pred_idx))
+                    speak.fire_safety_advice(model.names.get(pred_idx).lower())
 
             # Visualize the results on the frame
             annotated_frame = r.plot()
