@@ -28,16 +28,19 @@ picam2.start()
 
 model = YOLO("models/fsd10e.pt")
 
-# Convert angle to duty cycle
+# Keep track of the current duty cycle
+current_dc = 0
+
 def angle_to_duty_cycle(angle):
     # 2.5 is duty cycle for 0 degrees
     # 12.5 is duty cycle for 180 degrees
-    return 2.5 + (angle/180) * 10
+    return 2.5 + (angle / 180) * 10
 
-def move_smooth(target_angle, step_delay=0.1):
-    # Get current angle (approximate)
-    current_dc = pwm.ChangeDutyCycle(0)  # Get current duty cycle
-    current_angle = (current_dc - 2.5) * 180/10 if current_dc else 0
+def move_smooth(target_angle, step_delay=0.05):
+    global current_dc
+    
+    # Calculate current angle from the current duty cycle
+    current_angle = (current_dc - 2.5) * 180 / 10
     
     # Move in small steps
     step = 2  # degrees per step (smaller = smoother)
@@ -45,15 +48,18 @@ def move_smooth(target_angle, step_delay=0.1):
         for angle in range(int(current_angle), int(target_angle), step):
             dc = angle_to_duty_cycle(angle)
             pwm.ChangeDutyCycle(dc)
+            current_dc = dc  # Update current duty cycle
             time.sleep(step_delay)
     else:
         for angle in range(int(current_angle), int(target_angle), -step):
             dc = angle_to_duty_cycle(angle)
             pwm.ChangeDutyCycle(dc)
+            current_dc = dc  # Update current duty cycle
             time.sleep(step_delay)
     
     # Final position
     pwm.ChangeDutyCycle(angle_to_duty_cycle(target_angle))
+    current_dc = angle_to_duty_cycle(target_angle)  # Final update
 
 try:
     # Start PWM
@@ -87,8 +93,8 @@ try:
             break
         
         if current < MAX_ANGLE:
-            new_angle = current + 10
-            move_smooth(new_angle)
+            current += 10
+            move_smooth(current)
         else:
             move_smooth(MIN_ANGLE)
             current = 0
